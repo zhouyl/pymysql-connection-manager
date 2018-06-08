@@ -20,6 +20,24 @@ NOTE_QUERY_TIME = 5
 # 需要警告的查询执行时间(秒)，日志类型 WARNING
 WARN_QUERY_TIME = 10
 
+# 数据库默认字符集
+DB_CHARSET = 'utf8'
+
+# 数据库默认时区值
+DB_TIMEZONE = '+00:00'
+
+# 默认连接池大小
+POOL_SIZE = 10
+
+# 默认连接池连接可使用次数
+POOL_USAGES = 0
+
+# 默认连接池连接可使用时间(秒)
+POOL_TTL = 0
+
+# 默认连接池连接可闲置时间(秒)
+POOL_IDLE = 30
+
 # SQL 正则模式识别符
 RE_FLAG = re.I | re.S
 
@@ -47,8 +65,7 @@ class SQLHelper(object):
             return type(ident)(map(cls.identifier, ident))
 
         if isinstance(ident, dict):
-            return type(ident)(zip(map(cls.identifier, ident.keys()),
-                                   ident.values()))
+            return type(ident)(zip(map(cls.identifier, ident.keys()), ident.values()))
 
         raise ValueError("Invalid identifier value: %s" % type(ident))
 
@@ -114,7 +131,7 @@ class Connection(pymysql.connections.Connection):
 
     1. 默认编码设置为 utf8
     2. 默认开启 autocommit
-    3. 支持时区指定参数 timezone，默认为 +8:00
+    3. 支持时区指定参数 timezone，默认为 +00:00
     4. 默认使用 pymysql.cursors.DictCursor，在 fetch 时输出以列名为 key 的 dict 结果集
     5. 增加数据库丢失连接后自动重连的功能
     6. 增加数据库连接、警告、异常、查询等事件的日志记录
@@ -124,10 +141,10 @@ class Connection(pymysql.connections.Connection):
     '''
 
     # mysql 默认连接参数
-    _defaults = dict(autocommit=True, charset='utf8',
+    _defaults = dict(autocommit=True, charset=DB_CHARSET,
                      cursorclass=pymysql.cursors.DictCursor)
 
-    def __init__(self, timezone='+8:00', **kwargs):
+    def __init__(self, timezone=DB_TIMEZONE, **kwargs):
         self._timezone = str(timezone)
         self._configurations = {**self._defaults, **kwargs}
         self._log_prefix = '[%s@%s] ' % (kwargs.get('host', 'localhost'),
@@ -295,7 +312,7 @@ class Connection(pymysql.connections.Connection):
                 ...
 
         例如：
-            for row in mysql.fetch_yields(sql, per=5000):
+            for row in mysql.fetch_iterator(sql, per=5000):
                 print(row)
         '''
         import math
@@ -445,7 +462,7 @@ class ConnectionPooled(object):
     # 这个连接，是不进入连接池的
     _connection = None
 
-    _defaults = dict(max_size=3, idle=30, name='mysql')
+    _defaults = dict(max_size=POOL_SIZE, max_usage=POOL_USAGES, ttl=POOL_TTL, idle=POOL_IDLE)
 
     def __init__(self, pool_options=None, **kwargs):
         self._configurations = kwargs

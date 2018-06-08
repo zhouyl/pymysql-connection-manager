@@ -1,4 +1,4 @@
 pymysql-connection-manager
 ##########################
 
-pymysql connection &amp; pool manager for python3
+pymysql connection & pool manager for python3
