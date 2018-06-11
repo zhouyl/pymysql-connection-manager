@@ -104,6 +104,9 @@ by fetch_iterator
   # insert ignore into mytable (foo, bar) values (1, 2) on duplicate key update ...
   db.insert('insert ignore into mytable on duplicate key update ...', **dict(foo=1, bar=2))
 
+  # insert ignore into mytable (id, name) values (1, 'foo'), (2, 'bar') on duplicate key update ...
+  db.insert_many('insert ignore into mytable on duplicate key update ...', ['id', 'name'], [(1, 'foo'), (2, 'bar')])
+
   # update mytable set foo=1, bar=2 where id between %s and %s
   db.update('update mytable where id between %s and %s', 10, 5, foo=1, bar=2)
   db.update('update mytable where id between %s and %s', [10, 5], foo=1, bar=2)
