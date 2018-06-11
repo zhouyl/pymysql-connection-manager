@@ -137,7 +137,7 @@ class Connection(pymysql.connections.Connection):
     6. 增加数据库连接、警告、异常、查询等事件的日志记录
     7. 新增 with 语法以支持事务操作
     8. 提供 fetch_all/fetch_row/fetch_column/fetch_first 等简化查询方法
-    9. 提供 insert/replace/update/delete 等简化调用方法
+    9. 提供 insert/insert_many/update/delete 等简化调用方法
     '''
 
     # mysql 默认连接参数
