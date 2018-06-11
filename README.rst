@@ -126,7 +126,8 @@ Connection Pool
 .. code-block:: python
 
   from pymysql_manager import ConnectionPooled
-  pooled = ConnectionPooled(host='192.0.0.1', database='foo', pool_options=dict(max_size=5))
+  pooled = ConnectionPooled(host='192.0.0.1', database='foo', 
+                            pool_options=dict(max_size=10, max_usage=100000, idle=60, ttl=120))
 
 2. Execute SQL without the connection pool
 ------------------------------------------
