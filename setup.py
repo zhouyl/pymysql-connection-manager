@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='pymysql_manager',
-    version='0.0.1',
+    version='0.0.2',
     description='pymysql connection & pool manager for python3',
     long_description=open('README.rst').read(),
     author='zhouyl',
