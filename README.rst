@@ -28,7 +28,7 @@ New features
   import pymysql
   from pymysql_manager import Connection
 
-  conn = Connection(host='192.0.0.1', database='foo', timezone='+8:00')
+  db = Connection(host='192.0.0.1', database='foo', timezone='+8:00')
 
 2. Transaction
 --------------
@@ -38,19 +38,19 @@ Before code:
 .. code-block:: python
 
   try:
-    conn.begin()
-    conn.execute(....)
+    db.begin()
+    db.execute(....)
   catch Exception:
-    conn.rollback()
+    db.rollback()
   else:
-    conn.commit()
+    db.commit()
 
 Now:
 
 .. code-block:: python
 
-  with conn.transaction():
-    conn.execute(...)
+  with db.transaction():
+    db.execute(...)
 
 3. Fetch rowsets
 ----------------
@@ -58,16 +58,16 @@ Now:
 .. code-block:: python
 
   # executed: select * from foo where id between 5 and 10
-  all_rows = conn.fetch_all('select * from foo where id between %s and %s', 5, 10)
+  all_rows = db.fetch_all('select * from foo where id between %s and %s', 5, 10)
 
   # executed: select * from foo limit 1
-  first_row = conn.fetch_row('select * from foo')
+  first_row = db.fetch_row('select * from foo')
 
   # executed: select * from foo limit 1
-  first_column_on_first_row = conn.fetch_first('select * from foo')
+  first_column_on_first_row = db.fetch_first('select * from foo')
 
   # executed: select * from foo limit 1
-  third_column_on_first_row = conn.fetch_column('select * from foo', column=3)
+  third_column_on_first_row = db.fetch_column('select * from foo', column=3)
 
 4. Fetch by Iterator
 --------------------
@@ -79,8 +79,8 @@ by SSCursor
 
 .. code-block:: python
 
-  cursor = conn.cursor(pymysql.cursors.SSCursor)
-  conn.execute(sql)
+  cursor = db.cursor(pymysql.cursors.SSCursor)
+  cursor.execute(sql)
   while True:
     row = cursor.fetchone()
     if not row:
@@ -90,8 +90,8 @@ by fetch_iterator
 
 .. code-block:: python
 
-  for row in conn.fetch_iterator(sql, per=1000, max=100000):
-    print(row)
+  for row in db.fetch_iterator(sql, per=1000, max=100000):
+    pass
 
 5. Single/Bulk Insert or Replace | Update | Delete
 --------------------------------------------------
@@ -126,7 +126,7 @@ Connection Pool
 .. code-block:: python
 
   from pymysql_manager import ConnectionPooled
-  pooled = ConnectionPooled(host='192.0.0.1', database='foo', 
+  db = ConnectionPooled(host='192.0.0.1', database='foo',
                             pool_options=dict(max_size=10, max_usage=100000, idle=60, ttl=120))
 
 2. Execute SQL without the connection pool
@@ -134,15 +134,15 @@ Connection Pool
 
 .. code-block:: python
 
-  pooled.execute(sql)
-  pooled.connection.execute(sql)
+  db.execute(sql)
+  db.connection.execute(sql)
 
 3. Using connection pool to execute SQL
 ---------------------------------------
 
 .. code-block:: python
 
-  with pooled.pool() as connection:
+  with db.pool() as connection:
     connection.execute(sql)
 
 
@@ -155,7 +155,7 @@ Connection Manager
 .. code-block:: python
 
   from pymysql_manager import ConnectionManager
-  m = ConnectionManager(default='foo',
+  db = ConnectionManager(default='foo',
                          foo=dict(host='192.0.0.1', database='foo', user='root', passwd=''),
                          bar=dict(host='192.0.0.1', database='bar', user='root', passwd=''))
 
@@ -164,18 +164,18 @@ Connection Manager
 
 .. code-block:: python
 
-  m.execute(sql) # use default connection
-  m['foo].execute(sql)
-  m.connection('foo').exeucte(sql)
+  db.execute(sql) # use default connection
+  db['foo].execute(sql)
+  db.connection('foo').exeucte(sql)
 
 3. Get a connection from connection pool
 ----------------------------------------
 
 .. code-block:: python
 
-  with m.pool() as connection: pass  # use default connection
-  with m['foo'].pool() as connection: pass
-  with m.connection('foo').pool() as connection: pass
+  with db.pool() as connection: pass  # use default connection
+  with db['foo'].pool() as connection: pass
+  with db.connection('foo').pool() as connection: pass
 
 
 License
