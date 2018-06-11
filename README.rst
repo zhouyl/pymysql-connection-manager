@@ -155,7 +155,7 @@ Connection Manager
 .. code-block:: python
 
   from pymysql_manager import ConnectionManager
-  dm = ConnectionManager(default='foo',
+  m = ConnectionManager(default='foo',
                          foo=dict(host='192.0.0.1', database='foo', user='root', passwd=''),
                          bar=dict(host='192.0.0.1', database='bar', user='root', passwd=''))
 
@@ -164,21 +164,21 @@ Connection Manager
 
 .. code-block:: python
 
-  dm.execute(sql) # use default connection
-  dm['foo].execute(sql)
-  dm.connection('foo').exeucte(sql)
+  m.execute(sql) # use default connection
+  m['foo].execute(sql)
+  m.connection('foo').exeucte(sql)
 
 3. Get a connection from connection pool
 ----------------------------------------
 
 .. code-block:: python
 
-  with dm.pool() as connection: pass  # use default connection
-  with dm['foo'].pool() as connection: pass
-  with dm.connection('foo').pool() as connection: pass
+  with m.pool() as connection: pass  # use default connection
+  with m['foo'].pool() as connection: pass
+  with m.connection('foo').pool() as connection: pass
 
 
 License
 =======
 
-he MIT License (MIT). Please see License File for more information.
+The MIT License (MIT). Please see License File for more information.
